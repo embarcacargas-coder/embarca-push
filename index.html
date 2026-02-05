@@ -1,1 +1,32 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Ativar Notificações – Embarca Cargas</title>
 
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0f172a">
+
+<link rel="manifest" href="/embarca-push/manifest.json">
+
+<script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+
+<script>
+window.OneSignalDeferred = window.OneSignalDeferred || [];
+OneSignalDeferred.push(function(OneSignal) {
+  OneSignal.init({
+    appId: "COLE_AQUI_SEU_APP_ID",
+    notifyButton: { enable: true },
+    serviceWorkerPath: "/embarca-push/OneSignalSDKWorker.js",
+    serviceWorkerUpdaterPath: "/embarca-push/OneSignalSDKWorker.js",
+    serviceWorkerParam: { scope: "/embarca-push/" }
+  });
+});
+</script>
+</head>
+
+<body>
+<h2>🔔 Ativar Notificações</h2>
+<p>Ative para receber aviso de novas cargas.</p>
+</body>
+</html>
