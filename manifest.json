@@ -1,1 +1,21 @@
-
+{
+  "name": "Embarca Push",
+  "short_name": "PushCargas",
+  "start_url": "/embarca-push/",
+  "scope": "/embarca-push/",
+  "display": "standalone",
+  "background_color": "#020617",
+  "theme_color": "#0f172a",
+  "icons": [
+    {
+      "src": "/embarca-push/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/embarca-push/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
