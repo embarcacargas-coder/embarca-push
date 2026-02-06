@@ -1,32 +1,28 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<title>Ativar Notificações – Embarca Cargas</title>
+  <meta charset="UTF-8">
+  <title>Embarca Cargas - Notificações</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#0f172a">
-
-<link rel="manifest" href="/embarca-push/manifest.json">
-
-<script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
-
-<script>
-window.OneSignalDeferred = window.OneSignalDeferred || [];
-OneSignalDeferred.push(function(OneSignal) {
-  OneSignal.init({
-    appId: "COLE_AQUI_SEU_APP_ID",
-    notifyButton: { enable: true },
-    serviceWorkerPath: "/embarca-push/OneSignalSDKWorker.js",
-    serviceWorkerUpdaterPath: "/embarca-push/OneSignalSDKWorker.js",
-    serviceWorkerParam: { scope: "/embarca-push/" }
-  });
-});
-</script>
+  <!-- OneSignal SDK -->
+  <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+  <script>
+    window.OneSignalDeferred = window.OneSignalDeferred || [];
+    OneSignalDeferred.push(async function(OneSignal) {
+      await OneSignal.init({
+        appId: "1a7d23b0-3888-45af-b78c-af6f0190e6de",
+        notifyButton: {
+          enable: true
+        }
+      });
+    });
+  </script>
 </head>
 
-<body>
-<h2>🔔 Ativar Notificações</h2>
-<p>Ative para receber aviso de novas cargas.</p>
+<body style="font-family: Arial, sans-serif; text-align: center; padding: 40px;">
+  <h1>🔔 Ativar Notificações</h1>
+  <p>Ative para receber aviso de novas cargas disponíveis.</p>
+  <p>Você pode desativar a qualquer momento nas configurações do navegador.</p>
 </body>
 </html>
