@@ -1,0 +1,35 @@
+name: Push Nova Carga - Embarca Cargas
+
+on:
+  schedule:
+    - cron: "*/10 * * * *"
+  workflow_dispatch:
+
+jobs:
+  push:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Baixar feed do Blogger
+        run: |
+          curl -s "https://www.embarcacargas.com.br/feeds/posts/default?alt=json" > feed.json
+
+      - name: Ler última publicação
+        run: |
+          TITLE=$(jq -r '.feed.entry[0].title.$t' feed.json)
+          LINK=$(jq -r '.feed.entry[0].link[] | select(.rel=="alternate") | .href' feed.json)
+          echo "TITLE=$TITLE" >> $GITHUB_ENV
+          echo "LINK=$LINK" >> $GITHUB_ENV
+
+      - name: Enviar push via OneSignal
+        run: |
+          curl -X POST "https://onesignal.com/api/v1/notifications" \
+          -H "Content-Type: application/json; charset=utf-8" \
+          -H "Authorization: Basic ${{ secrets.ONESIGNAL_API_KEY }}" \
+          -d '{
+            "app_id": "'"${{ secrets.ONESIGNAL_APP_ID }}"'",
+            "included_segments": ["Subscribed Users"],
+            "headings": {"pt": "🚛 Nova carga disponível"},
+            "contents": {"pt": "Uma nova carga foi publicada no Embarca Cargas. Toque para ver."},
+            "url": "'"$LINK"'"
+          }'
