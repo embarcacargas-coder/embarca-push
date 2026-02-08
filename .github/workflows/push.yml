@@ -10,26 +10,52 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Baixar feed do Blogger
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Buscar feed do Blogger
         run: |
           curl -s "https://www.embarcacargas.com.br/feeds/posts/default?alt=json" > feed.json
 
-      - name: Ler última publicação
+      - name: Ler último post enviado
         run: |
+          if [ -f last_post.txt ]; then
+            echo "LAST=$(cat last_post.txt)" >> $GITHUB_ENV
+          else
+            echo "LAST=none" >> $GITHUB_ENV
+          fi
+
+      - name: Verificar post atual
+        run: |
+          ID=$(jq -r '.feed.entry[0].id.$t' feed.json)
           TITLE=$(jq -r '.feed.entry[0].title.$t' feed.json)
           LINK=$(jq -r '.feed.entry[0].link[] | select(.rel=="alternate") | .href' feed.json)
+
+          echo "ID=$ID" >> $GITHUB_ENV
           echo "TITLE=$TITLE" >> $GITHUB_ENV
           echo "LINK=$LINK" >> $GITHUB_ENV
 
-      - name: Enviar push via OneSignal
+      - name: Enviar push se for novo
+        if: env.ID != env.LAST
         run: |
+          echo "$ID" > last_post.txt
+
           curl -X POST "https://onesignal.com/api/v1/notifications" \
           -H "Content-Type: application/json; charset=utf-8" \
           -H "Authorization: Basic ${{ secrets.ONESIGNAL_API_KEY }}" \
           -d '{
             "app_id": "'"${{ secrets.ONESIGNAL_APP_ID }}"'",
             "included_segments": ["Subscribed Users"],
-            "headings": {"pt": "🚛 Nova carga disponível"},
-            "contents": {"pt": "Uma nova carga foi publicada no Embarca Cargas. Toque para ver."},
+            "headings": {"pt": " Nova carga disponível"},
+            "contents": {"pt": "'"$TITLE"'"},
             "url": "'"$LINK"'"
           }'
+
+      - name: Commit controle de post
+        if: env.ID != env.LAST
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add last_post.txt
+          git commit -m "Atualiza último post enviado"
+          git push
